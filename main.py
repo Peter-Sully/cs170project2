@@ -50,20 +50,20 @@ def feature_search(data):
         for k in range(1, num_features + 1):
             if k not in current_set:
                 accuracy = leave_one_out_cross_val(data, current_set, k)
-                print(f"Using feature(s) {current_set + [k]} accuracy is {accuracy * 100:.1f}%")
+                print(f"Using feature(s) {{{', '.join(map(str, current_set + [k]))}}} accuracy is {accuracy * 100:.1f}%")
 
                 if accuracy > best_so_far:
                     best_so_far = accuracy
                     feature_to_add_at_this_level = k
         if feature_to_add_at_this_level is not None:
             current_set.append(feature_to_add_at_this_level)
-            print(f"Feature set {current_set} was best, accuracy is {best_so_far * 100:.1f}%")
+            print(f"Feature set {{{', '.join(map(str, current_set))}}} was best, accuracy is {best_so_far * 100:.1f}%")
 
             if best_so_far > best_overall_accuracy:
                 best_overall_accuracy = best_so_far
                 best_overall_set = current_set[:]
 
-    print(f"\nFinished search!! The best feature subset is {best_overall_set}, which has an accuracy of {best_overall_accuracy * 100:.1f}%")
+    print(f"\nFinished search!! The best feature subset is {{{', '.join(map(str, best_overall_set))}}}, which has an accuracy of {best_overall_accuracy * 100:.1f}%")
 
 def backward_search(data):
     current_set = list(range(1, len(data[0])))  
@@ -81,7 +81,7 @@ def backward_search(data):
             temp_set.remove(k)
 
             accuracy = leave_one_out_cross_val(data, temp_set, None)
-            print(f"Using feature(s) {temp_set} accuracy is {accuracy * 100:.1f}%")
+            print(f"Using feature(s) {{{', '.join(map(str, temp_set))}}} accuracy is {accuracy * 100:.1f}%")
 
             if accuracy > best_so_far:
                 best_so_far = accuracy
@@ -89,13 +89,12 @@ def backward_search(data):
         
         if feature_to_remove_at_this_level is not None:
             current_set.remove(feature_to_remove_at_this_level)
-            print(f"Feature set {current_set} was best, accuracy is {best_so_far * 100:.1f}%")
-
+            print(f"Feature set {{{', '.join(map(str, current_set))}}} was best, accuracy is {best_so_far * 100:.1f}%")
             if best_so_far > best_overall_accuracy:
                 best_overall_accuracy = best_so_far
                 best_overall_set = current_set[:]
 
-    print(f"\nFinished search!! The best feature subset is {best_overall_set}, which has an accuracy of {best_overall_accuracy * 100:.1f}%")
+    print(f"\nFinished search!! The best feature subset is {{{', '.join(map(str, best_overall_set))}}}, which has an accuracy of {best_overall_accuracy * 100:.1f}%")
 
 
 def main():
