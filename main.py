@@ -1,5 +1,9 @@
+#Needed for inf
 import math
+#Needed for data loading/handling
 import numpy as np
+#Used to time runs
+import timeit
 
 def load_data(file):
     data = np.loadtxt(file)
@@ -110,8 +114,13 @@ def main():
     print(f'Running nearest neighbor with all {num_features}, using "leaving-one-out" evaluation, I get an accuracy of {accuracy_all_features*100:.1f}%')
 
     if alg == "1":
+        start_time = timeit.default_timer()
         feature_search(data)
+        end_time = timeit.default_timer()
+        print(f"Forward Selection took {end_time - start_time:.2f} seconds to complete.")
     elif alg == "2":
+        start_time = timeit.default_timer()
         backward_search(data)
-
+        end_time = timeit.default_timer()
+        print(f"Backward Elimination took {end_time - start_time:.2f} seconds to complete.")
 main()
