@@ -1,4 +1,4 @@
-#Needed for inf
+#Needed for sqrt
 import math
 #Needed for data loading/handling
 import numpy as np
@@ -17,6 +17,7 @@ def leave_one_out_cross_val(data, current_set, feature_to_add):
         features.append(feature_to_add)
     
     for i in range(len(data)):
+        #Rather than 0-ing out unused columns, used python in operator to only grab columns that were needed
         object_to_classify = [data[i][j] for j in features]
         label_object_to_classify = data[i][0]
 
@@ -50,7 +51,7 @@ def feature_search(data):
         for k in range(1, num_features + 1):
             if k not in current_set:
                 accuracy = leave_one_out_cross_val(data, current_set, k)
-                print(f"Using feature(s) {{{', '.join(map(str, current_set + [k]))}}} accuracy is {accuracy * 100:.1f}%")
+                print(f"\tUsing feature(s) {{{', '.join(map(str, current_set + [k]))}}} accuracy is {accuracy * 100:.1f}%")
 
                 if accuracy > best_so_far:
                     best_so_far = accuracy
@@ -81,7 +82,7 @@ def backward_search(data):
             temp_set.remove(k)
 
             accuracy = leave_one_out_cross_val(data, temp_set, None)
-            print(f"Using feature(s) {{{', '.join(map(str, temp_set))}}} accuracy is {accuracy * 100:.1f}%")
+            print(f"\tUsing feature(s) {{{', '.join(map(str, temp_set))}}} accuracy is {accuracy * 100:.1f}%")
 
             if accuracy > best_so_far:
                 best_so_far = accuracy
@@ -96,6 +97,12 @@ def backward_search(data):
 
     print(f"\nFinished search!! The best feature subset is {{{', '.join(map(str, best_overall_set))}}}, which has an accuracy of {best_overall_accuracy * 100:.1f}%")
 
+def compute_default_rate(data):
+    class_labels = data[:, 0]  # Extract the first column (class labels)
+    unique, counts = np.unique(class_labels, return_counts=True)  # Count occurrences
+    most_frequent_class_count = max(counts) 
+    default_rate = most_frequent_class_count / len(class_labels)  # Compute default accuracy
+    return default_rate
 
 def main():
     print("Welcome to Peter Sullivan's Feature Selection Algorithm.")
@@ -110,6 +117,7 @@ def main():
     print(f"This dataset has {num_features} features (not including the class attribute), with {num_instances} instances")
 
     accuracy_all_features = leave_one_out_cross_val(data, list(range(1, num_features + 1)), None)
+    print(f'Default rate for this dataset is {compute_default_rate(data)*100:.1f}%')
     print(f'Running nearest neighbor with all {num_features}, using "leaving-one-out" evaluation, I get an accuracy of {accuracy_all_features*100:.1f}%')
 
     if alg == "1":
